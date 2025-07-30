@@ -1,0 +1,113 @@
+<!-- templates/reports/document_by_location_pdf.html -->
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ report_title }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            font-size: 12px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #3498db;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #3498db;
+            padding-bottom: 5px;
+        }
+        .report-info {
+            margin-bottom: 20px;
+            font-size: 10px;
+            color: #666;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 10px;
+            color: #666;
+        }
+        .location-details {
+            margin-bottom: 5px;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ report_title }}</h1>
+    
+    <div class="report-info">
+        <p>Дата генерації: {{ generated_at|date:"d.m.Y H:i" }}</p>
+        {% if start_date %}<p>Період: з {{ start_date|date:"d.m.Y" }}{% if end_date %} по {{ end_date|date:"d.m.Y" }}{% endif %}</p>{% endif %}
+        {% if category %}<p>Категорія: {{ category.name }}</p>{% endif %}
+    </div>
+    
+    {% for location, docs in locations_data.items %}
+    <h2>Місце зберігання: {{ location.name }}</h2>
+    <p class="location-details">Кімната: {{ location.room }}, Полиця: {{ location.shelf }}{% if location.box %}, Коробка: {{ location.box }}{% endif %}</p>
+    <p class="location-details">Кількість документів: {{ docs|length }}</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Назва</th>
+                <th>Тип</th>
+                <th>Номер</th>
+                <th>Дата видачі</th>
+                <th>Категорія</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in docs %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ doc.title }}</td>
+                <td>{{ doc.get_document_type_display }}</td>
+                <td>{{ doc.document_number }}</td>
+                <td>{{ doc.issue_date|date:"d.m.Y" }}</td>
+                <td>{{ doc.category.name|default:"-" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endfor %}
+    
+    <div class="footer">
+        <p>Архівна система навчального закладу © {% now "Y" %}</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Головна - Архівна система{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-12 text-center mb-5">
+            <h1 class="display-4">Інформаційна система обліку архівних документів</h1>
+            <p class="lead">Ефективне управління архівними документами навчального закладу</p>
+        </div>
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-file-alt fa-3x mb-3 text-primary"></i>
+                    <h5 class="card-title">Управління документами</h5>
+                    <p class="card-text">Додавайте, редагуйте та видаляйте архівні документи. Зберігайте всю необхідну інформацію в одному місці.</p>
+                    <a href="{% url 'document-list' %}" class="btn btn-primary">Перейти до документів</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-search fa-3x mb-3 text-success"></i>
+                    <h5 class="card-title">Пошук та фільтрація</h5>
+                    <p class="card-text">Швидко знаходьте потрібні документи за допомогою зручного пошуку та фільтрації за різними параметрами.</p>
+                    <a href="{% url 'document-list' %}" class="btn btn-success">Шукати документи</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-bar fa-3x mb-3 text-info"></i>
+                    <h5 class="card-title">Звіти та аналітика</h5>
+                    <p class="card-text">Генеруйте звіти про архівні документи за різними критеріями для аналізу та звітності.</p>
+                    <a href="{% url 'report-list' %}" class="btn btn-info">Перейти до звітів</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-folder-open fa-3x mb-3 text-warning"></i>
+                    <h5 class="card-title">Категорії та класифікація</h5>
+                    <p class="card-text">Організуйте документи за категоріями для зручного доступу та управління.</p>
+                    <a href="{% url 'category-list' %}" class="btn btn-warning">Керувати категоріями</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-archive fa-3x mb-3 text-secondary"></i>
+                    <h5 class="card-title">Місця зберігання</h5>
+                    <p class="card-text">Відстежуйте фізичне розташування документів для швидкого доступу до них.</p>
+                    <a href="{% url 'storage-location-list' %}" class="btn btn-secondary">Керувати місцями зберігання</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Ласкаво просимо до системи обліку архівних документів</h3>
+                    <p class="card-text">Для доступу до системи, будь ласка, увійдіть або зареєструйтеся.</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'login' %}" class="btn btn-primary">Увійти</a>
+                        <a href="{% url 'register' %}" class="btn btn-outline-primary">Зареєструватися</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

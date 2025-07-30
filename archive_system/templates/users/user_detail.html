@@ -1,0 +1,154 @@
+<!-- templates/users/user_detail.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}{{ user.username }} - Архівна система{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Профіль користувача</h1>
+    <div class="btn-group" role="group">
+        {% if request.user.is_staff %}
+        <a href="{% url 'user-delete' user.pk %}" class="btn btn-danger">
+            <i class="fas fa-trash me-2"></i> Видалити
+        </a>
+        {% endif %}
+        <a href="{% url 'user-list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i> Назад до списку
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Інформація про користувача</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-user-circle fa-5x text-primary"></i>
+                </div>
+                <h4>{{ user.get_full_name }}</h4>
+                <p class="text-muted">{{ user.username }}</p>
+                <p><i class="fas fa-envelope me-2"></i> {{ user.email|default:"Не вказано" }}</p>
+                <p><i class="fas fa-briefcase me-2"></i> {{ user.profile.position|default:"Не вказано" }}</p>
+                <p><i class="fas fa-building me-2"></i> {{ user.profile.department|default:"Не вказано" }}</p>
+                {% if user.profile.phone %}
+                <p><i class="fas fa-phone me-2"></i> {{ user.profile.phone }}</p>
+                {% endif %}
+                <p><i class="fas fa-calendar-alt me-2"></i> Дата реєстрації: {{ user.date_joined|date:"d.m.Y" }}</p>
+                
+                <div class="mt-3">
+                    {% if user.is_active %}
+                    <span class="badge bg-success">Активний</span>
+                    {% else %}
+                    <span class="badge bg-danger">Неактивний</span>
+                    {% endif %}
+                    
+                    {% if user.is_staff %}
+                    <span class="badge bg-primary">Адміністратор</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Створені документи</h5>
+            </div>
+            <div class="card-body">
+                {% with user.created_documents.all|slice:":5" as recent_documents %}
+                {% if recent_documents %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Назва</th>
+                                <th>Тип</th>
+                                <th>Номер</th>
+                                <th>Дата створення</th>
+                                <th>Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for doc in recent_documents %}
+                            <tr>
+                                <td>{{ doc.title }}</td>
+                                <td>{{ doc.get_document_type_display }}</td>
+                                <td>{{ doc.document_number }}</td>
+                                <td>{{ doc.created_at|date:"d.m.Y" }}</td>
+                                <td>
+                                    <a href="{% url 'document-detail' doc.pk %}" class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if user.created_documents.count > 5 %}
+                <div class="text-center mt-3">
+                    <a href="{% url 'document-list' %}?created_by={{ user.id }}" class="btn btn-sm btn-outline-primary">
+                        Переглянути всі документи ({{ user.created_documents.count }})
+                    </a>
+                </div>
+                {% endif %}
+                {% else %}
+                <p class="text-muted">Користувач ще не створив жодного документа.</p>
+                {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Створені звіти</h5>
+            </div>
+            <div class="card-body">
+                {% with user.report_set.all|slice:":5" as recent_reports %}
+                {% if recent_reports %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Назва</th>
+                                <th>Тип</th>
+                                <th>Дата створення</th>
+                                <th>Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in recent_reports %}
+                            <tr>
+                                <td>{{ report.title }}</td>
+                                <td>{{ report.get_report_type_display }}</td>
+                                <td>{{ report.created_at|date:"d.m.Y" }}</td>
+                                <td>
+                                    <a href="{% url 'report-detail' report.pk %}" class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if user.report_set.count > 5 %}
+                <div class="text-center mt-3">
+                    <a href="{% url 'report-list' %}?created_by={{ user.id }}" class="btn btn-sm btn-outline-primary">
+                        Переглянути всі звіти ({{ user.report_set.count }})
+                    </a>
+                </div>
+                {% endif %}
+                {% else %}
+                <p class="text-muted">Користувач ще не створив жодного звіту.</p>
+                {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

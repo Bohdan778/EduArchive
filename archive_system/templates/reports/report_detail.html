@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ report.title }} - Архівна система{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>{{ report.title }}</h1>
+    <div class="btn-group" role="group">
+        {% if report.file %}
+        <a href="{{ report.file.url }}" class="btn btn-success" target="_blank">
+            <i class="fas fa-download me-2"></i> Завантажити
+        </a>
+        {% endif %}
+        <a href="{% url 'report-delete' report.pk %}" class="btn btn-danger">
+            <i class="fas fa-trash me-2"></i> Видалити
+        </a>
+        <a href="{% url 'report-list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i> Назад до списку
+        </a>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Інформація про звіт</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table">
+                    <tr>
+                        <th style="width: 30%">Тип звіту:</th>
+                        <td>{{ report.get_report_type_display }}</td>
+                    </tr>
+                    <tr>
+                        <th>Створено:</th>
+                        <td>{{ report.created_at|date:"d.m.Y H:i" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Користувач:</th>
+                        <td>{{ report.created_by.get_full_name|default:report.created_by.username }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <table class="table">
+                    <tr>
+                        <th style="width: 30%">Параметри:</th>
+                        <td>
+                            {% if report.parameters %}
+                            <ul class="mb-0">
+                                {% for key, value in report.parameters.items %}
+                                <li><strong>{{ key }}:</strong> {{ value|default:"Не вказано" }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            Не вказано
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if report.file %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Перегляд звіту</h5>
+    </div>
+    <div class="card-body">
+        {% if report.file.url|slice:"-4:" == ".pdf" %}
+        <div class="ratio ratio-16x9">
+            <iframe src="{{ report.file.url }}" allowfullscreen></iframe>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i> Попередній перегляд недоступний для цього типу файлу. 
+            <a href="{{ report.file.url }}" class="alert-link" target="_blank">Завантажте файл</a> для перегляду.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

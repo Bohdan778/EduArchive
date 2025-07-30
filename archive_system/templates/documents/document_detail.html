@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ document.title }} - Архівна система{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>{{ document.title }}</h1>
+    <div class="btn-group" role="group">
+        <a href="{% url 'document-update' document.pk %}" class="btn btn-warning">
+            <i class="fas fa-edit me-2"></i> Редагувати
+        </a>
+        <a href="{% url 'document-delete' document.pk %}" class="btn btn-danger">
+            <i class="fas fa-trash me-2"></i> Видалити
+        </a>
+        <a href="{% url 'document-history' document.pk %}" class="btn btn-secondary">
+            <i class="fas fa-history me-2"></i> Історія
+        </a>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Інформація про документ</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table">
+                    <tr>
+                        <th style="width: 30%">Тип документа:</th>
+                        <td>{{ document.get_document_type_display }}</td>
+                    </tr>
+                    <tr>
+                        <th>Номер документа:</th>
+                        <td>{{ document.document_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>Категорія:</th>
+                        <td>{{ document.category.name|default:"Не вказано" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Дата видачі:</th>
+                        <td>{{ document.issue_date|date:"d.m.Y" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Термін дії до:</th>
+                        <td>{{ document.expiry_date|date:"d.m.Y"|default:"Безстроковий" }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <table class="table">
+                    <tr>
+                        <th style="width: 30%">Місце зберігання:</th>
+                        <td>{{ document.storage_location.name|default:"Не вказано" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Кімната:</th>
+                        <td>{{ document.storage_location.room|default:"Не вказано" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Полиця:</th>
+                        <td>{{ document.storage_location.shelf|default:"Не вказано" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Коробка:</th>
+                        <td>{{ document.storage_location.box|default:"Не вказано" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Створено:</th>
+                        <td>{{ document.created_at|date:"d.m.Y H:i" }} ({{ document.created_by.get_full_name|default:document.created_by.username }})</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        {% if document.description %}
+        <div class="row mt-3">
+            <div class="col-12">
+                <h5>Опис:</h5>
+                <p>{{ document.description }}</p>
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if document.file %}
+        <div class="row mt-3">
+            <div class="col-12">
+                <h5>Файл документа:</h5>
+                <a href="{{ document.file.url }}" class="btn btn-primary" target="_blank">
+                    <i class="fas fa-download me-2"></i> Завантажити файл
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Остання активність</h5>
+    </div>
+    <div class="card-body">
+        {% with document.history.all|slice:":5" as recent_history %}
+        {% if recent_history %}
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Користувач</th>
+                        <th>Дія</th>
+                        <th>Деталі</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in recent_history %}
+                    <tr>
+                        <td>{{ entry.timestamp|date:"d.m.Y H:i" }}</td>
+                        <td>{{ entry.user.get_full_name|default:entry.user.username }}</td>
+                        <td>{{ entry.get_action_display }}</td>
+                        <td>{{ entry.details|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <a href="{% url 'document-history' document.pk %}" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-history me-2"></i> Переглянути всю історію
+        </a>
+        {% else %}
+        <p class="text-muted">Немає записів історії для цього документа.</p>
+        {% endif %}
+        {% endwith %}
+    </div>
+</div>
+{% endblock %}

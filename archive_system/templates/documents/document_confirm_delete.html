@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Підтвердження видалення документа{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4>Підтвердження видалення</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Ви впевнені, що хочете видалити цей документ?</h5>
+                    
+                    <div class="alert alert-warning mt-3">
+                        <p><strong>Увага!</strong> Ця дія не може бути скасована.</p>
+                    </div>
+                    
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ object.title }}</h5>
+                            <p class="card-text"><strong>Тип документа:</strong> {{ object.get_document_type_display }}</p>
+                            <p class="card-text"><strong>Номер документа:</strong> {{ object.document_number }}</p>
+                            <p class="card-text"><strong>Дата видачі:</strong> {{ object.issue_date|date:"d.m.Y" }}</p>
+                            {% if object.category %}
+                            <p class="card-text"><strong>Категорія:</strong> {{ object.category.name }}</p>
+                            {% endif %}
+                            {% if object.storage_location %}
+                            <p class="card-text"><strong>Місце зберігання:</strong> {{ object.storage_location.name }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'document-detail' object.id %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Скасувати
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash-alt"></i> Видалити документ
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

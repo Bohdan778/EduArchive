@@ -1,0 +1,96 @@
+/* static/css/custom.css */
+
+/* Додаткові стилі для системи */
+.document-card {
+    transition: transform 0.3s;
+}
+
+.document-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.sidebar .nav-link {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.sidebar .nav-link:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.sidebar .nav-link.active {
+    background-color: rgba(13, 110, 253, 0.2);
+}
+
+.footer {
+    border-top: 1px solid #e9ecef;
+}
+
+/* Стилі для історії документів */
+.timeline {
+    position: relative;
+    padding: 20px 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 20px;
+    width: 2px;
+    background-color: #e9ecef;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 50px;
+    margin-bottom: 20px;
+}
+
+.timeline-badge {
+    position: absolute;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    color: white;
+    background-color: #6c757d;
+    z-index: 1;
+}
+
+.timeline-badge.create {
+    background-color: #28a745;
+}
+
+.timeline-badge.update {
+    background-color: #ffc107;
+}
+
+.timeline-badge.view {
+    background-color: #17a2b8;
+}
+
+.timeline-badge.delete {
+    background-color: #dc3545;
+}
+
+.timeline-panel {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.timeline-heading h5 {
+    margin-bottom: 5px;
+}
+
+.timeline-date {
+    color: #6c757d;
+    font-size: 0.875rem;
+}

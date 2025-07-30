@@ -1,0 +1,105 @@
+<!-- templates/reports/activity_log_pdf.html -->
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ report_title }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            font-size: 12px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .report-info {
+            margin-bottom: 20px;
+            font-size: 10px;
+            color: #666;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 10px;
+            color: #666;
+        }
+        .action-create {
+            color: #27ae60;
+        }
+        .action-update {
+            color: #f39c12;
+        }
+        .action-view {
+            color: #3498db;
+        }
+        .action-delete {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ report_title }}</h1>
+    
+    <div class="report-info">
+        <p>Дата генерації: {{ generated_at|date:"d.m.Y H:i" }}</p>
+        {% if start_date %}<p>Період: з {{ start_date|date:"d.m.Y" }}{% if end_date %} по {{ end_date|date:"d.m.Y" }}{% endif %}</p>{% endif %}
+        {% if user_filter %}<p>Користувач: {{ user_filter.get_full_name }}</p>{% endif %}
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Дата і час</th>
+                <th>Користувач</th>
+                <th>Документ</th>
+                <th>Дія</th>
+                <th>Деталі</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in history %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ entry.timestamp|date:"d.m.Y H:i" }}</td>
+                <td>{{ entry.user.get_full_name|default:entry.user.username }}</td>
+                <td>{{ entry.document.title }}</td>
+                <td class="action-{{ entry.action }}">{{ entry.get_action_display }}</td>
+                <td>{{ entry.details|default:"-" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="footer">
+        <p>Архівна система навчального закладу © {% now "Y" %}</p>
+    </div>
+</body>
+</html>
